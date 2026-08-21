@@ -59,7 +59,7 @@ sam build
 sam deploy --guided
 ```
 
-This sets up AWS Lambda, S3, DynamoDB, API Gateway, and an EventBridge cron (triggers every 6 hours).
+This sets up AWS Lambda, S3, DynamoDB, API Gateway, and an EventBridge cron (triggers every 6 hours)
 
 ---
 
