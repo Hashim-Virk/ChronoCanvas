@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChronoCanvas - Autonomous Weather & Mood Generative Agent</title>
+  <meta name="description"
+    content="An always-on autonomous creative agent running on AWS that synthesizes daily digital art, poetry, and dynamic visual themes inspired by real-time weather and time of day.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Background Ambient Glow Canvas -->
+  <div id="ambient-glow" class="ambient-glow"></div>
+
+  <!-- Header Navigation -->
+  <header class="header">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="brand-title">ChronoCanvas</span>
+        <span class="brand-badge">AWS Level 200 Agent</span>
+      </div>
+    </div>
+
+    <div class="aws-status-pill" id="aws-status-pill">
+      <span class="pulse-dot"></span>
+      <span class="status-text">AWS EventBridge: Active</span>
+    </div>
+
+    <div class="header-actions">
+      <button id="trigger-agent-btn" class="btn btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+        </svg>
+        <span>Trigger Agent</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Environmental & Mood Hero Bar -->
+    <section class="environmental-hero">
+      <div class="env-card glass-card">
+        <div class="env-item">
+          <span class="env-label">Location</span>
+          <span class="env-value" id="env-location">Detecting...</span>
+        </div>
+        <div class="env-divider"></div>
+        <div class="env-item">
+          <span class="env-label">Weather Condition</span>
+          <span class="env-value" id="env-weather">Fetching weather...</span>
+        </div>
+        <div class="env-divider"></div>
+        <div class="env-item">
+          <span class="env-label">Solar Phase</span>
+          <span class="env-value" id="env-phase">Calculating phase...</span>
+        </div>
+        <div class="env-divider"></div>
+        <div class="env-item">
+          <span class="env-label">Dominant Mood</span>
+          <span class="env-value" id="env-mood">Deriving mood...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Master Showcase Grid -->
+    <section class="showcase-grid">
+
+      <!-- Left Column: Generated Digital Artwork -->
+      <div class="canvas-artwork-card glass-card">
+        <div class="artwork-header">
+          <div class="artwork-meta">
+            <span class="badge-tag" id="canvas-id-badge">ID: Loading...</span>
+            <span class="timestamp-badge" id="canvas-timestamp">Synthesized: --</span>
+          </div>
+          <button id="fullscreen-btn" class="btn-icon" title="View Full Resolution">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+              </path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="artwork-viewport">
+          <img id="main-artwork-img" src="" alt="ChronoCanvas Generated Art" class="artwork-image hidden">
+          <div id="artwork-skeleton" class="skeleton-loader">
+            <div class="spinner"></div>
+            <p>Agent is synthesizing daily canvas...</p>
+          </div>
+        </div>
+
+        <!-- HSL Palette Bar -->
+        <div class="palette-container">
+          <span class="palette-label">Agent Theme Palette:</span>
+          <div class="palette-swatches" id="palette-swatches">
+            <!-- Swatches dynamically inserted -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Poetry, Lore & Inspector -->
+      <div class="canvas-details-card glass-card">
+        <div class="details-header">
+          <h1 id="canvas-title" class="canvas-title">Whispering Vapors of Dawn</h1>
+          <p id="canvas-subtitle" class="canvas-subtitle">Autonomous Generative Synthesis</p>
+        </div>
+
+        <div class="poem-container">
+          <h3 class="section-heading">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+            </svg>
+            Environmental Poem
+          </h3>
+          <blockquote id="canvas-poem" class="poem-text">
+            Loading poem...
+          </blockquote>
+        </div>
+
+        <div class="lore-container">
+          <h3 class="section-heading">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Synthesis Lore
+          </h3>
+          <p id="canvas-lore" class="lore-text">Loading lore...</p>
+        </div>
+
+        <!-- Prompt Inspector Collapse -->
+        <details class="prompt-inspector">
+          <summary class="inspector-summary">
+            <span>Generative Prompt & Parameters</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <div class="inspector-content">
+            <pre><code id="canvas-prompt">Loading prompt string...</code></pre>
+          </div>
+        </details>
+
+        <!-- Ambient Soundscape Player -->
+        <div class="soundscape-box">
+          <div class="soundscape-info">
+            <span class="soundscape-title">Ambient Atmospheric Resonance</span>
+            <span class="soundscape-status" id="soundscape-status">Synth Engine: Idle</span>
+          </div>
+          <button id="toggle-audio-btn" class="btn btn-secondary btn-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+            <span>Play Ambient Audio</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- History Timeline Gallery -->
+    <section class="history-section">
+      <div class="section-title-area">
+        <h2>Autonomous Creation Timeline</h2>
+        <p>Browse previous canvases synthesized silently by the AWS agent</p>
+      </div>
+
+      <div class="history-grid" id="history-grid">
+        <!-- History items dynamically injected -->
+      </div>
+    </section>
+
+    <!-- AWS Architecture Info Banner -->
+    <section class="aws-architecture-section glass-card">
+      <h3>AWS Autonomous Agent Architecture</h3>
+      <div class="arch-grid">
+        <div class="arch-item">
+          <div class="arch-icon">⚡</div>
+          <h4>AWS EventBridge</h4>
+          <p>Triggers agent execution on a periodic schedule (e.g. rate(6 hours)) completely hands-free.</p>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon">⚙️</div>
+          <h4>AWS Lambda</h4>
+          <p>Runs serverless agent logic, fetches weather metrics, and synthesizes visual & textual content.</p>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon">🗄️</div>
+          <h4>AWS S3 & DynamoDB</h4>
+          <p>Stores high-res digital art assets, creation metadata, and color vectors for fast retrieval.</p>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon">🌐</div>
+          <h4>AWS API Gateway</h4>
+          <p>Exposes REST endpoints (`/canvas/latest`, `/canvas/history`) for frontend consumption.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Image Modal Viewport -->
+  <div id="image-modal" class="modal hidden">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-content">
+      <img id="modal-img" src="" alt="Full resolution artwork">
+      <button id="close-modal-btn" class="btn-close">&times;</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

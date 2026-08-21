@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ChronoCanvas - Weather & Atmosphere Adaptive Autonomous Creative Agent
+  Level 200 AWS Weekend Challenge Serverless Stack
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.11
+
+Resources:
+
+  # S3 Bucket for Generated Digital Art & Canvas JSON Meta
+  ChronoCanvasBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "chronocanvas-creations-${AWS::AccountId}"
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [GET, HEAD]
+            AllowedOrigins: ['*']
+
+  # DynamoDB Table for Gallery Storage & Search Metadata
+  ChronoCanvasTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: ChronoCanvas-Gallery
+      PrimaryKey:
+        Name: canvas_id
+        Type: String
+
+  # AWS Lambda Agent Execution Core
+  ChronoCanvasFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../backend/
+      Handler: lambda_function.lambda_handler
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: !Ref ChronoCanvasBucket
+          DYNAMODB_TABLE: !Ref ChronoCanvasTable
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref ChronoCanvasBucket
+        - DynamoDBCrudPolicy:
+            TableName: ChronoCanvas-Gallery
+      Events:
+        # Scheduled EventBridge Cron Trigger (Every 6 Hours)
+        CronSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: rate(6 hours)
+            Description: Trigger ChronoCanvas agent to synthesize artwork periodically
+        # API Gateway Endpoints
+        GetLatest:
+          Type: Api
+          Properties:
+            Path: /canvas/latest
+            Method: get
+        GetHistory:
+          Type: Api
+          Properties:
+            Path: /canvas/history
+            Method: get
+        TriggerGenerate:
+          Type: Api
+          Properties:
+            Path: /canvas/generate
+            Method: post
+
+Outputs:
+  ChronoCanvasApiEndpoint:
+    Description: "API Gateway endpoint URL for ChronoCanvas backend"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
+  ChronoCanvasS3BucketName:
+    Description: "S3 Bucket Name storing generated artifacts"
+    Value: !Ref ChronoCanvasBucket
